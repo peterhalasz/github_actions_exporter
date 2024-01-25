@@ -10,7 +10,7 @@ import (
 
 	"github.com/cpanato/github_actions_exporter/internal/server"
 	"github.com/go-kit/log"
-	"github.com/google/go-github/v50/github"
+	"github.com/google/go-github/v58/github"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -87,6 +87,7 @@ func Test_Server_MetricsRouteAfterWorkflowJob(t *testing.T) {
 	}()
 
 	repo := "some-repo"
+	branch := "some-branch"
 	org := "someone"
 	expectedDuration := 10.0
 	jobStartedAt := time.Unix(1650308740, 0)
@@ -102,6 +103,7 @@ func Test_Server_MetricsRouteAfterWorkflowJob(t *testing.T) {
 			},
 		},
 		WorkflowJob: &github.WorkflowJob{
+			HeadBranch:      &branch,
 			Status:          github.String("completed"),
 			Conclusion:      github.String("success"),
 			StartedAt:       &github.Timestamp{Time: jobStartedAt},
@@ -125,6 +127,6 @@ func Test_Server_MetricsRouteAfterWorkflowJob(t *testing.T) {
 
 	payload, err := io.ReadAll(metricsRes.Body)
 	require.NoError(t, err)
-	assert.Contains(t, string(payload), `workflow_job_duration_seconds_bucket{org="someone",repo="some-repo",runner_group="runner-group",state="in_progress",le="10.541350399999995"} 1`)
-	assert.Contains(t, string(payload), `workflow_job_duration_seconds_total{conclusion="success",org="someone",repo="some-repo",runner_group="runner-group",status="completed"} 10`)
+	assert.Contains(t, string(payload), `workflow_job_duration_seconds_bucket{branch="some-branch",org="someone",repo="some-repo",runner_group="runner-group",state="in_progress",le="10.541350399999995"} 1`)
+	assert.Contains(t, string(payload), `workflow_job_duration_seconds_total{branch="some-branch",conclusion="success",org="someone",repo="some-repo",runner_group="runner-group",status="completed"} 10`)
 }
