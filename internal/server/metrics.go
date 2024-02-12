@@ -96,16 +96,16 @@ var _ WorkflowObserver = (*PrometheusObserver)(nil)
 type PrometheusObserver struct{}
 
 func (o *PrometheusObserver) ObserveWorkflowJobDuration(org, repo, state, runnerGroup, workflowName, jobName, branch string, seconds float64) {
-	workflowJobHistogramVec.WithLabelValues(org, repo, state, runnerGroup, workflowName, jobName).
+	workflowJobHistogramVec.WithLabelValues(org, repo, state, runnerGroup, workflowName, jobName, branch).
 		Observe(seconds)
 }
 
 func (o *PrometheusObserver) CountWorkflowJobStatus(org, repo, status, conclusion, runnerGroup, workflowName, jobName, branch string) {
-	workflowJobStatusCounter.WithLabelValues(org, repo, status, conclusion, runnerGroup, workflowName, jobName).Inc()
+	workflowJobStatusCounter.WithLabelValues(org, repo, status, conclusion, runnerGroup, workflowName, jobName, branch).Inc()
 }
 
 func (o *PrometheusObserver) CountWorkflowJobDuration(org, repo, status, conclusion, runnerGroup, workflowName, jobName, branch string, seconds float64) {
-	workflowJobDurationCounter.WithLabelValues(org, repo, status, conclusion, runnerGroup, workflowName, jobName).Add(seconds)
+	workflowJobDurationCounter.WithLabelValues(org, repo, status, conclusion, runnerGroup, workflowName, jobName, branch).Add(seconds)
 }
 
 func (o *PrometheusObserver) ObserveWorkflowRunDuration(org, repo, branch, workflowName, conclusion string, seconds float64) {

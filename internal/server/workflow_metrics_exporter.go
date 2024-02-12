@@ -100,11 +100,11 @@ func (c *WorkflowMetricsExporter) HandleGHWebHook(w http.ResponseWriter, r *http
 func (c *WorkflowMetricsExporter) CollectWorkflowJobEvent(event *github.WorkflowJobEvent) {
 	repo := event.GetRepo().GetName()
 	org := event.GetRepo().GetOwner().GetLogin()
-	branch := event.WorkflowJob.GetHeadBranch()
 
 	action := event.GetAction()
 
 	workflowJob := event.GetWorkflowJob()
+	branch := workflowJob.GetHeadBranch()
 	runnerGroup := workflowJob.GetRunnerGroupName()
 	conclusion := workflowJob.GetConclusion()
 	status := workflowJob.GetStatus()
